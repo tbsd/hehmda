@@ -12,6 +12,7 @@ import dns
 from flask import Flask, jsonify, render_template, send_from_directory, request
 from flask_cors import CORS
 from pymongo import MongoClient
+from bson import json_util
 
 
 def create_app(config=None):
@@ -52,6 +53,22 @@ def create_app(config=None):
         info = users.find_one({'id': user_id}, {'nickname': 1})
         print(info)
         return info['nickname']
+
+    # get user contacts
+    @app.route('/api/v1/users/<path:user_id>/contacts')
+    def get_contacts(user_id):
+        db = client['db']
+        users = db['users']
+        if 'session' in request.args:
+            session = request.args['session']
+            actual_session = users.find_one({'id': user_id},
+                                            {'session': 1})['session']
+            if session == actual_session:
+                info = users.find_one({'id': user_id},
+                                      {'_id': 0, 'id': 1, 'contacts': 1})
+                return json_util.dumps(info)
+        else:
+            return 'Access denied.'
 
     return app
 
