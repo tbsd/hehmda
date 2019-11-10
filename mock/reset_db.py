@@ -7,11 +7,11 @@ import pymongo
 from pymongo import MongoClient
 
 client = MongoClient('localhost', 27017)
-db = client['main_db']
+db = client['db']
 users = db['users']
 chats = db['chats']
 
-client.drop_database('main_db')
+client.drop_database('db')
 users.insert_many([
     {
         'id': '1',
