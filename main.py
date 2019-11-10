@@ -57,7 +57,7 @@ def create_app(config=None):
             info = users.find_one({'id': user_id}, {'_id': 0, 'id': 1,
                                                     'nickname': 1})
             return json_util.dumps(info)
-        return 'Not Found'
+        return ''
 
     # get user contacts
     @app.route('/api/v1/users/contacts')
@@ -69,7 +69,7 @@ def create_app(config=None):
             info = users.find_one({'id': user_id},
                                   {'_id': 0, 'id': 1, 'contacts': 1})
             return json_util.dumps(info)
-        return 'Access denied.'
+        return ''
 
     return app
 
