@@ -71,6 +71,20 @@ def create_app(config=None):
             return json_util.dumps(info)
         return ''
 
+    # get all chats
+    @app.route('/api/v1/users/chats')
+    def get_all_chats():
+        db = client['db']
+        users = db['users']
+        chats = db['chats']
+        if is_valid_session(users, request):
+            user_id = request.args['id']
+            chats_id = users.find_one({'id': user_id}, 
+                                      {'chat_list': 1})['chat_list']
+            info = chats.find({'id': {'$in': chats_id}}, {'_id': 0})
+            return json_util.dumps(info)
+        return ''
+
     return app
 
 
