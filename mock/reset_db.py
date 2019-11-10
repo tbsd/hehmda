@@ -19,7 +19,7 @@ users.insert_many([
         'password_hash': '1234',
         'nickname': 'xXxNagibatorxXx',
         'chat_list': ['1', '2'],
-        'contacts': ['2', '3'],
+        'contacts': [{'2': 'kolyan322'}, {'3': 'johndoe'}],
         'session': '4321'
         },
     {
@@ -28,7 +28,7 @@ users.insert_many([
         'password_hash': 'animekruto',
         'nickname': 'pro100kolya',
         'chat_list': ['1'],
-        'contacts': ['1'],
+        'contacts': [{'1': 'vasyan228'}],
         'session': 'ohlol'
         },
     {
@@ -37,7 +37,7 @@ users.insert_many([
         'password_hash': 'letmein',
         'nickname': 'username',
         'chat_list': ['1', '2'],
-        'contacts': ['1'],
+        'contacts': [{'1': 'vasyan228'}],
         'session': 'randomtoken'
         }
     ])
