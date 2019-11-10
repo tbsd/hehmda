@@ -14,6 +14,8 @@ from flask_cors import CORS
 from pymongo import MongoClient
 from bson import json_util
 
+from utils import is_valid_session
+
 
 def create_app(config=None):
     app = Flask(__name__)
@@ -62,16 +64,11 @@ def create_app(config=None):
     def get_contacts():
         db = client['db']
         users = db['users']
-        if 'id' in request.args:
+        if is_valid_session(users, request):
             user_id = request.args['id']
-            if 'session' in request.args:
-                session = request.args['session']
-                actual_session = users.find_one({'id': user_id},
-                                                {'session': 1})['session']
-                if session == actual_session:
-                    info = users.find_one({'id': user_id},
-                                          {'_id': 0, 'id': 1, 'contacts': 1})
-                    return json_util.dumps(info)
+            info = users.find_one({'id': user_id},
+                                  {'_id': 0, 'id': 1, 'contacts': 1})
+            return json_util.dumps(info)
         return 'Access denied.'
 
     return app
