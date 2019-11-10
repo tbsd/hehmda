@@ -44,6 +44,15 @@ def create_app(config=None):
     def get_js(path):
         return send_from_directory('js', path)
 
+    # get username by id
+    @app.route('/api/v1/users/<path:user_id>/nickname')
+    def get_nickname(user_id):
+        db = client['db']
+        users = db['users']
+        info = users.find_one({'id': user_id}, {'nickname': 1})
+        print(info)
+        return info['nickname']
+
     return app
 
 
