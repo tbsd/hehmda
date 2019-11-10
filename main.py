@@ -50,9 +50,9 @@ def create_app(config=None):
     def get_nickname(user_id):
         db = client['db']
         users = db['users']
-        info = users.find_one({'id': user_id}, {'nickname': 1})
-        print(info)
-        return info['nickname']
+        info = users.find_one({'id': user_id}, {'_id': 0, 'id': 1,
+                                                'nickname': 1})
+        return json_util.dumps(info)
 
     # get user contacts
     @app.route('/api/v1/users/<path:user_id>/contacts')
