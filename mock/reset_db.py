@@ -51,19 +51,19 @@ chats.insert_many([
             {
                 'id': '1',
                 'author': '1',
-                'time': '1',  # replace with actual timestamp
+                'time': '2019-11-10 18:42:15.867907',
                 'content': 'what\'s up gamers'
                 },
             {
                 'id': '2',
                 'author': '2',
-                'time': '2',
+                'time': '2019-11-10 18:52:15.867907',
                 'content': 'hello there'
                 },
             {
                 'id': '3',
                 'author': '3',
-                'time': '3',
+                'time': '2019-11-10 19:02:05.867907',
                 'content': 'sup guys'
                 }
             ]
@@ -75,25 +75,25 @@ chats.insert_many([
             {
                 'id': '4',
                 'author': '1',
-                'time': '4',
+                'time': '2019-10-10 8:01:13.162907',
                 'content': 'How do you do?'
                 },
             {
                 'id': '5',
                 'author': '3',
-                'time': '5',
+                'time': '2019-10-10 8:02:13.162907',
                 'content': 'Thank you, i\'m fine'
                 },
             {
                 'id': '6',
                 'author': '3',
-                'time': '6',
+                'time': '2019-10-10 8:02:22.162907',
                 'content': 'Also, London is a capital of great Britan'
                 },
             {
                 'id': '7',
                 'author': '1',
-                'time': '7',
+                'time': '2019-10-10 8:03:20.162908',
                 'content': 'My English is very well'
                 }
             ]
