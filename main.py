@@ -46,29 +46,33 @@ def create_app(config=None):
         return send_from_directory('js', path)
 
     # get username by id
-    @app.route('/api/v1/users/<path:user_id>/nickname')
-    def get_nickname(user_id):
+    @app.route('/api/v1/users/nickname')
+    def get_nickname():
         db = client['db']
         users = db['users']
-        info = users.find_one({'id': user_id}, {'_id': 0, 'id': 1,
-                                                'nickname': 1})
-        return json_util.dumps(info)
+        if 'id' in request.args:
+            user_id = request.args['id']
+            info = users.find_one({'id': user_id}, {'_id': 0, 'id': 1,
+                                                    'nickname': 1})
+            return json_util.dumps(info)
+        return 'Not Found'
 
     # get user contacts
-    @app.route('/api/v1/users/<path:user_id>/contacts')
-    def get_contacts(user_id):
+    @app.route('/api/v1/users/contacts')
+    def get_contacts():
         db = client['db']
         users = db['users']
-        if 'session' in request.args:
-            session = request.args['session']
-            actual_session = users.find_one({'id': user_id},
-                                            {'session': 1})['session']
-            if session == actual_session:
-                info = users.find_one({'id': user_id},
-                                      {'_id': 0, 'id': 1, 'contacts': 1})
-                return json_util.dumps(info)
-        else:
-            return 'Access denied.'
+        if 'id' in request.args:
+            user_id = request.args['id']
+            if 'session' in request.args:
+                session = request.args['session']
+                actual_session = users.find_one({'id': user_id},
+                                                {'session': 1})['session']
+                if session == actual_session:
+                    info = users.find_one({'id': user_id},
+                                          {'_id': 0, 'id': 1, 'contacts': 1})
+                    return json_util.dumps(info)
+        return 'Access denied.'
 
     return app
 
