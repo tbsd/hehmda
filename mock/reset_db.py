@@ -69,7 +69,7 @@ chats.insert_many([
             ]
         },
     {
-        'id': '1',
+        'id': '2',
         'users': ['1', '3'],
         'messages': [
             {
