@@ -9,7 +9,7 @@ import json
 import pymongo
 import dns
 
-from flask import Flask, jsonify, render_template, send_from_directory, request
+from flask import Flask, jsonify, render_template, send_from_directory, request, make_response
 from flask_cors import CORS
 from pymongo import MongoClient
 from bson import json_util
@@ -52,8 +52,8 @@ def create_app(config=None):
     def get_nickname():
         db = client['db']
         users = db['users']
-        if 'id' in request.args:
-            user_id = request.args['id']
+        if 'id' in request.cookies:
+            user_id = request.cookies['id']
             info = users.find_one({'id': user_id}, {'_id': 0, 'id': 1,
                                                     'nickname': 1})
             return json_util.dumps(info)
@@ -65,7 +65,7 @@ def create_app(config=None):
         db = client['db']
         users = db['users']
         if is_valid_session(users, request):
-            user_id = request.args['id']
+            user_id = request.cookies['id']
             info = users.find_one({'id': user_id},
                                   {'_id': 0, 'id': 1, 'contacts': 1})
             return json_util.dumps(info)
@@ -78,7 +78,7 @@ def create_app(config=None):
         users = db['users']
         chats = db['chats']
         if is_valid_session(users, request):
-            user_id = request.args['id']
+            user_id = request.cookies['id']
             chats_id = users.find_one({'id': user_id}, 
                                       {'chat_list': 1})['chat_list']
             info = chats.find({'id': {'$in': chats_id}}, {'_id': 0})
