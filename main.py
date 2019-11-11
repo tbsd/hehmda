@@ -14,7 +14,7 @@ from flask_cors import CORS
 from pymongo import MongoClient
 from bson import json_util
 
-from utils import is_valid_session
+from utils import validate_session
 
 
 def create_app(config=None):
@@ -52,9 +52,9 @@ def create_app(config=None):
     def get_contacts():
         db = client['db']
         users = db['users']
-        if is_valid_session(users, request):
-            user_id = request.cookies['id']
-            info = users.find_one({'id': user_id},
+        user = validate_session(users, request)
+        if user:
+            info = users.find_one({'id': user['id']},
                                   {'_id': 0, 'id': 1, 'contacts': 1})
             return json_util.dumps(info)
         return ''
@@ -65,14 +65,13 @@ def create_app(config=None):
         db = client['db']
         users = db['users']
         chats = db['chats']
-        if is_valid_session(users, request):
-            user_id = request.cookies['id']
-            chats_id = users.find_one({'id': user_id}, 
-                                      {'chat_list': 1})['chat_list']
+        user = validate_session(users, request)
+        if user:
+            chats_id = user['chat_list']
             info = chats.find({'id': {'$in': chats_id}}, {'_id': 0})
             return json_util.dumps(info)
         return ''
-
+p
     return app
 
 

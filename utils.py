@@ -1,10 +1,6 @@
-def is_valid_session(users, request):
-    if 'id' in request.cookies:
-        user_id = request.cookies['id']
-        if 'session' in request.cookies:
-            session = request.cookies['session']
-            actual_session = users.find_one({'id': user_id},
-                                            {'session': 1})['session']
-            if session == actual_session:
-                return True
-    return False
+# return ifnoramtion about user or empty document if no such token in base
+def validate_session(users, request):
+    if 'session' in request.cookies:
+        session = request.cookies['session']
+        user = users.find_one({'session': session})
+    return user
