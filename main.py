@@ -34,6 +34,9 @@ def create_app(config=None):
     # MongoDB client
     # local
     client = MongoClient('localhost', 27017)
+    db = client['db']
+    users = db['users']
+    chats = db['chats']
     # global
     # client = pymongo.MongoClient("mongodb+srv://testing-repo:testing-repo@testing-repo-4xvfr.mongodb.net/admin?retryWrites=true&w=majority")
 
@@ -55,8 +58,6 @@ def create_app(config=None):
     # get user contacts
     @app.route('/api/v1/users/contacts')
     def get_contacts():
-        db = client['db']
-        users = db['users']
         user = validate_session(users, request)
         if user:
             info = users.find_one({'id': user['id']},
@@ -67,9 +68,6 @@ def create_app(config=None):
     # get all chats
     @app.route('/api/v1/users/chats')
     def get_all_chats():
-        db = client['db']
-        users = db['users']
-        chats = db['chats']
         user = validate_session(users, request)
         if user:
             chats_id = user['chat_list']
