@@ -1,2 +1,4 @@
 # tmp files
 *~
+
+__pycache__/
