@@ -57,7 +57,7 @@ def create_app(config=None):
             info = users.find_one({'id': user['id']},
                                   {'_id': 0, 'id': 1, 'contacts': 1})
             return json_util.dumps(info)
-        return ''
+        return render_template('error.html')
 
     # get all chats
     @app.route('/api/v1/users/chats')
@@ -70,8 +70,8 @@ def create_app(config=None):
             chats_id = user['chat_list']
             info = chats.find({'id': {'$in': chats_id}}, {'_id': 0})
             return json_util.dumps(info)
-        return ''
-p
+        return render_template('error.html')
+
     return app
 
 
