@@ -37,6 +37,11 @@ def create_app(config=None):
     # global
     # client = pymongo.MongoClient("mongodb+srv://testing-repo:testing-repo@testing-repo-4xvfr.mongodb.net/admin?retryWrites=true&w=majority")
 
+    # 404 error handler
+    @app.errorhandler(404)
+    def not_found(error):
+        return render_template('error.html')
+
     # main page
     @app.route("/")
     def hello_world():
