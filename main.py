@@ -47,18 +47,6 @@ def create_app(config=None):
     def get_js(path):
         return send_from_directory('js', path)
 
-    # get username by id
-    @app.route('/api/v1/users/nickname')
-    def get_nickname():
-        db = client['db']
-        users = db['users']
-        if 'id' in request.cookies:
-            user_id = request.cookies['id']
-            info = users.find_one({'id': user_id}, {'_id': 0, 'id': 1,
-                                                    'nickname': 1})
-            return json_util.dumps(info)
-        return ''
-
     # get user contacts
     @app.route('/api/v1/users/contacts')
     def get_contacts():
