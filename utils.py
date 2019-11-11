@@ -4,3 +4,8 @@ def validate_session(users, request):
         session = request.cookies['session']
         user = users.find_one({'session': session})
     return user
+
+
+# adds obj to array field in document with id in collection
+def push_to_db(collection, id, field, obj):
+    collection.find_one_and_update({'id': id}, {'$push': {field: obj}})
