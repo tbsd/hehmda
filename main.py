@@ -14,7 +14,7 @@ from flask_cors import CORS
 from pymongo import MongoClient
 from bson import json_util
 
-from utils import validate_session
+from utils import validate_session, push_to_db
 
 
 def create_app(config=None):
@@ -74,6 +74,19 @@ def create_app(config=None):
             info = chats.find({'id': {'$in': chats_id}}, {'_id': 0})
             return json_util.dumps(info)
         return render_template('error.html')
+
+    # adds contact to current user by given id
+    @app.route('/api/v1/users/addcontact', methods=['POST'])
+    def add_contact():
+        user = validate_session(users, request)
+        data = request.get_json(force=True)
+        print('\n\n\n')
+        new_contact = users.find_one({'id': data['id']}, 
+                                     {'_id': 0, 'id': 1, 'nickname': 1})
+        new_contact_json = json_util.dumps(new_contact)
+        if new_contact:
+            push_to_db(users, user['id'], 'contacts', new_contact_json)
+        return new_contact_json
 
     return app
 
