@@ -88,7 +88,7 @@ def create_app(config=None):
         return new_contact_json
 
     # add user to chat
-    @app.route('/api/v1/users/addtochat', methods=['POST'])
+    @app.route('/api/v1/chats/addtochat', methods=['POST'])
     def add_to_chat():
         user = validate_session(users, request)
         data = request.get_json(force=True)
