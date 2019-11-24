@@ -81,12 +81,31 @@ def create_app(config=None):
         user = validate_session(users, request)
         data = request.get_json(force=True)
         print('\n\n\n')
-        new_contact = users.find_one({'id': data['id']}, 
+        new_contact = users.find_one({'id': data['id']},
                                      {'_id': 0, 'id': 1, 'nickname': 1})
         new_contact_json = json_util.dumps(new_contact)
         if new_contact:
             push_to_db(users, user['id'], 'contacts', new_contact_json)
         return new_contact_json
+
+    # add user to chat
+    @app.route('/api/v1/users/addtochat', methods=['POST'])
+    def add_to_chat():
+        user = validate_session(users, request)
+        data = request.get_json(force=True)
+        chat_id = data['chat_id']
+        new_user_id = data['new_user_id']
+        # only if user is member of this chat
+        if (chat_id in user['chat_list']):
+            new_user = users.find_one({'id': new_user_id},
+                                  {'_id': 0, 'id': 1, 'chat_list': 1})
+            if (new_user and chat_id not in new_user['chat_list']):
+                push_to_db(chats, chat_id, 'users', new_user_id)
+                push_to_db(users, new_user_id, 'chat_list', chat_id)
+        updated_chat_users = json_util.dumps(
+                chats.find_one({'id': chat_id},
+                               {'_id': 0, 'id': 1, 'users': 1}))
+        return updated_chat_users
 
     return app
 
