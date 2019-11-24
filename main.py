@@ -8,11 +8,12 @@ import os
 import json
 import pymongo
 import dns
-
+import time
 from flask import Flask, jsonify, render_template, send_from_directory, request, make_response
 from flask_cors import CORS
 from pymongo import MongoClient
 from bson import json_util
+from datetime import datetime
 
 from utils import validate_session, push_to_db
 
@@ -95,7 +96,7 @@ def create_app(config=None):
         chat_id = data['chat_id']
         new_user_id = data['new_user_id']
         # only if user is member of this chat
-        if (chat_id in user['chat_list']):
+        if (user and chat_id in user['chat_list']):
             new_user = users.find_one({'id': new_user_id},
                                   {'_id': 0, 'id': 1, 'chat_list': 1})
             if (new_user and chat_id not in new_user['chat_list']):
