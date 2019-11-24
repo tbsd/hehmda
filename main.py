@@ -80,7 +80,6 @@ def create_app(config=None):
     def add_contact():
         user = validate_session(users, request)
         data = request.get_json(force=True)
-        print('\n\n\n')
         new_contact = users.find_one({'id': data['id']},
                                      {'_id': 0, 'id': 1, 'nickname': 1})
         new_contact_json = json_util.dumps(new_contact)
