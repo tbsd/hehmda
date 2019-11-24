@@ -149,6 +149,19 @@ def create_app(config=None):
             return json_util.dumps(chat)
         return json_util.dumps('')
 
+    # get members of the chat
+    @app.route('/api/v1/chats/getusers', methods=['POST'])
+    def get_users():
+        user = validate_session(users, request)
+        data = request.get_json(force=True)
+        chat_id = data['chat_id']
+        # only if user is member of this chat
+        if (user and chat_id in user['chat_list']):
+            chat = chats.find_one({'id': chat_id},
+                                  {'_id': 0, 'id': 1, 'users': 1})
+            return json_util.dumps(chat)
+        return json_util.dumps('')
+
     return app
 
 
