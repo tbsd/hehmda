@@ -9,6 +9,7 @@ import json
 import pymongo
 import dns
 import time
+
 from flask import Flask, jsonify, render_template, send_from_directory, request, make_response
 from flask_cors import CORS
 from pymongo import MongoClient
@@ -107,6 +108,28 @@ def create_app(config=None):
                                {'_id': 0, 'id': 1, 'users': 1}))
         return updated_chat_users
 
+    # add message to chat
+    @app.route('/api/v1/chats/send', methods=['POST'])
+    def send():
+        user = validate_session(users, request)
+        data = request.get_json(force=True)
+        chat_id = data['chat_id']
+        # only if user is member of this chat
+        if (user and chat_id in user['chat_list']):
+            timestamp = int(time.time())
+            content = data['content']
+            # replace 'script' with its utf-8 code
+            # to prevent malicious code execution
+            content = content.replace('script',
+                                      '&#x73;&#x63;&#x72;&#x69;&#x70;&#x74;')
+            message = json_util.dumps({'id': timestamp,
+                        'author': user['id'],
+                        'time': datetime.fromtimestamp(timestamp),
+                        'content': content})
+            push_to_db(chats, chat_id, 'messages', message)
+            return message
+        return json_util.dumps('')
+
     return app
 
 
@@ -114,4 +137,3 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     app = create_app()
     app.run(host="0.0.0.0", port=port)
-
