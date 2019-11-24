@@ -130,6 +130,25 @@ def create_app(config=None):
             return message
         return json_util.dumps('')
 
+    # get only new messages
+    @app.route('/api/v1/chats/getnewmessages', methods=['POST'])
+    def get_new_messages():
+        user = validate_session(users, request)
+        data = request.get_json(force=True)
+        chat_id = data['chat_id']
+        # only if user is member of this chat
+        if (user and chat_id in user['chat_list']):
+            last_id = int(data['last_id'])
+            chat = chats.find_one({'id': chat_id},
+                                  {'_id': 0, 'id': 1, 'messages': 1})
+            new_messages = []
+            for mesg in chat['messages']:
+                if (int(mesg['id']) > last_id):
+                    new_messages.append(mesg)
+            chat['messages'] = new_messages
+            return json_util.dumps(chat)
+        return json_util.dumps('')
+
     return app
 
 
