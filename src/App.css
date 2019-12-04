@@ -1,15 +1,9 @@
 .app-wrapper {
-  margin: 0 auto;
-  display: grid;
-  width: 60%;
-  grid-template-areas: 
-  "h h"
-  "ch c"; 
-  grid-template-rows: 90% 1fr;
-  grid-template-columns: 3fr 9fr;
-  grid-gap: 5px;
+    margin: 0 auto;
+    display: grid;
+    width: 60%;
+    grid-template-areas: "h h" "d c";
+    grid-template-rows: 90% 1fr;
+    grid-template-columns: 3fr 9fr;
+    grid-gap: 5px;
 }
-
-
-
-

@@ -2,15 +2,17 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Header from './components/Header/Header';
-import Content from './components/Content/Content';
-import Dialogs from './components/Dialogs/Dialogs';
+import Page from './components/Page/Page';
+import SignupPg from './components/SignupPg/SignupPg';
+import SigninPg from './components/SigninPg/SigninPg';
 
 const App = () => {
     return (
 	<div className='app-wrapper'>
           <Header />
-          <Content />
-          <Dialogs />
+          <SignupPg />
+          <SigninPg />
+          <Page />
         </div>
     );
 }
