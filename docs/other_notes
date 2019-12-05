@@ -5,6 +5,9 @@ https://github.com/tbsd/testing-repo
 по ней пользователь может получить из БД доступные ему вещи. Например, список контактов.
 
 Чобы можно было локлаьно тестить прогу нужно скачать и установить npm, python и mongodb
+После чего установить зависимости
+npm install
+pip install -r requirements.txt
 Затем, всё это запустить
 npm start
 mongo
