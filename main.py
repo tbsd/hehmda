@@ -16,7 +16,7 @@ from pymongo import MongoClient
 from bson import json_util
 from datetime import datetime
 
-from utils import validate_session, push_to_db
+from utils import validate_session, push_to_db, random_string
 
 
 def create_app(config=None):
@@ -116,6 +116,7 @@ def create_app(config=None):
         chat_id = data['chat_id']
         # only if user is member of this chat
         if (user and chat_id in user['chat_list']):
+            message_id = random_string()
             # timestamp in milliseconds
             timestamp = int(time.time()) * 1000
             content = data['content']
@@ -123,7 +124,7 @@ def create_app(config=None):
             # to prevent malicious code execution
             content = content.replace('script',
                                       '&#x73;&#x63;&#x72;&#x69;&#x70;&#x74;')
-            message = {'id': timestamp,
+            message = {'id': message_id,
                        'author': user['id'],
                        'time': timestamp,
                        'content': content}
