@@ -86,7 +86,7 @@ def create_app(config=None):
                                      {'_id': 0, 'id': 1, 'nickname': 1})
         new_contact_json = json_util.dumps(new_contact)
         if new_contact:
-            push_to_db(users, user['id'], 'contacts', new_contact_json)
+            push_to_db(users, user['id'], 'contacts', new_contact)
         return new_contact_json
 
     # add user to chat
