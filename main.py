@@ -122,12 +122,12 @@ def create_app(config=None):
             # to prevent malicious code execution
             content = content.replace('script',
                                       '&#x73;&#x63;&#x72;&#x69;&#x70;&#x74;')
-            message = json_util.dumps({'id': timestamp,
+            message = {'id': timestamp,
                         'author': user['id'],
                         'time': datetime.fromtimestamp(timestamp),
-                        'content': content})
+                        'content': content}
             push_to_db(chats, chat_id, 'messages', message)
-            return message
+            return json_util.dumps(message)
         return json_util.dumps('')
 
     # get only new messages
