@@ -116,16 +116,17 @@ def create_app(config=None):
         chat_id = data['chat_id']
         # only if user is member of this chat
         if (user and chat_id in user['chat_list']):
-            timestamp = int(time.time())
+            # timestamp in milliseconds
+            timestamp = int(time.time()) * 1000
             content = data['content']
             # replace 'script' with its utf-8 code
             # to prevent malicious code execution
             content = content.replace('script',
                                       '&#x73;&#x63;&#x72;&#x69;&#x70;&#x74;')
             message = {'id': timestamp,
-                        'author': user['id'],
-                        'time': datetime.fromtimestamp(timestamp),
-                        'content': content}
+                       'author': user['id'],
+                       'time': timestamp,
+                       'content': content}
             push_to_db(chats, chat_id, 'messages', message)
             return json_util.dumps(message)
         return json_util.dumps('')
