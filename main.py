@@ -140,14 +140,21 @@ def create_app(config=None):
         chat_id = data['chat_id']
         # only if user is member of this chat
         if (user and chat_id in user['chat_list']):
-            last_id = int(data['last_id'])
+            last_id = data['last_id']
             chat = chats.find_one({'id': chat_id},
                                   {'_id': 0, 'id': 1, 'messages': 1})
-            new_messages = []
-            for mesg in chat['messages']:
-                if (int(mesg['id']) > last_id):
-                    new_messages.append(mesg)
-            chat['messages'] = new_messages
+            messages = chat['messages']
+            last_index = 0
+            for last_index in range(len(messages)):
+                if last_id == messages[last_index]['id']:
+                    break
+            # if there is such id, send only new messages
+            # else send all messages
+            if (last_index + 1 != len(messages)):
+                chat['messages'] = messages[last_index + 1: len(messages)]
+            else:
+                if last_id == messages[-1]['id']:
+                    chat['messages'] = []
             return json_util.dumps(chat)
         return json_util.dumps('')
 
