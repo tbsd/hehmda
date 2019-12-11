@@ -7,7 +7,8 @@ def validate_session(users, request):
     if 'session' in request.cookies:
         session = request.cookies['session']
         user = users.find_one({'session': session})
-    return user
+        return user
+    return None
 
 
 # adds obj to array field in document with id in collection
