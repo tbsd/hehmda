@@ -180,8 +180,9 @@ def create_app(config=None):
     @app.route('/api/v1/users/authorization', methods=['POST'])
     def authorization():
         # Считывание логина и пароля
-        login = request.form['login']
-        password = request.form['password']
+        data = request.get_json(force=True)
+        login = data['login']
+        password = data['password']
         # Проверка, есть ли в базе данных эта личнасть
         if users.find({"login": login, "password_hash": password}).count() == 1:
             token = random_string(20)
