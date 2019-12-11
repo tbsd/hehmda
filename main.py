@@ -9,14 +9,17 @@ import json
 import pymongo
 import dns
 import time
+import cgi
 
-from flask import Flask, jsonify, render_template, send_from_directory, request, make_response
+from flask import Flask, jsonify, render_template, send_from_directory, request, make_response, redirect, url_for
 from flask_cors import CORS
 from pymongo import MongoClient
 from bson import json_util
 from datetime import datetime
-
 from utils import validate_session, push_to_db, random_string
+
+# Cookies
+from http import cookies
 
 
 def create_app(config=None):
@@ -39,6 +42,7 @@ def create_app(config=None):
     db = client['db']
     users = db['users']
     chats = db['chats']
+
     # global
     # client = pymongo.MongoClient("mongodb+srv://testing-repo:testing-repo@testing-repo-4xvfr.mongodb.net/admin?retryWrites=true&w=majority")
 
@@ -99,13 +103,13 @@ def create_app(config=None):
         # only if user is member of this chat
         if (user and chat_id in user['chat_list']):
             new_user = users.find_one({'id': new_user_id},
-                                  {'_id': 0, 'id': 1, 'chat_list': 1})
+                                      {'_id': 0, 'id': 1, 'chat_list': 1})
             if (new_user and chat_id not in new_user['chat_list']):
                 push_to_db(chats, chat_id, 'users', new_user_id)
                 push_to_db(users, new_user_id, 'chat_list', chat_id)
         updated_chat_users = json_util.dumps(
-                chats.find_one({'id': chat_id},
-                               {'_id': 0, 'id': 1, 'users': 1}))
+            chats.find_one({'id': chat_id},
+                           {'_id': 0, 'id': 1, 'users': 1}))
         return updated_chat_users
 
     # add message to chat
@@ -170,6 +174,27 @@ def create_app(config=None):
                                   {'_id': 0, 'id': 1, 'users': 1})
             return json_util.dumps(chat)
         return json_util.dumps('')
+
+    # Login and password for registration
+
+    @app.route('/api/v1/users/authorization', methods=['POST'])
+    def authorization():
+        # Считывание логина и пароля
+        login = request.form['login']
+        password = request.form['password']
+        # Проверка, есть ли в базе данных эта личнасть
+        if users.find({"login": login, "password_hash": password}).count() == 1:
+            token = random_string()
+            response = make_response()
+            user = users.find_one({"login": login, "password_hash": password})
+            users.find_one_and_update({'id': user['id']}, {'$set': {'session': token}})
+            user = users.find_one({"login": login, "password_hash": password})
+            response.set_cookie('session', token)
+            return response
+        else:
+            return
+
+
 
     return app
 
