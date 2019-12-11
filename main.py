@@ -193,7 +193,7 @@ def create_app(config=None):
             response.set_cookie('session', token)
             return response
         else:
-            return
+            return json_util.dumps('')
 
 
 
