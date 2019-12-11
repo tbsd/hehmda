@@ -25,7 +25,7 @@ users.insert_many([
     {
         'id': '2',
         'login': 'kolyan322',
-        'password_hash': 'animekruto',
+        'password_hash': '1234',
         'nickname': 'pro100kolya',
         'chat_list': ['1'],
         'contacts': [{'1': 'vasyan228'}],
