@@ -184,7 +184,7 @@ def create_app(config=None):
         password = request.form['password']
         # Проверка, есть ли в базе данных эта личнасть
         if users.find({"login": login, "password_hash": password}).count() == 1:
-            token = random_string()
+            token = random_string(20)
             response = make_response()
             user = users.find_one({"login": login, "password_hash": password})
             users.find_one_and_update({'id': user['id']}, {'$set': {'session': token}})
