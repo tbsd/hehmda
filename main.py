@@ -16,7 +16,7 @@ from flask_cors import CORS
 from pymongo import MongoClient
 from bson import json_util
 from datetime import datetime
-from utils import validate_session, push_to_db, random_string
+from utils import validate_session, push_to_db, random_string, random_id
 
 # Cookies
 from http import cookies
@@ -190,12 +190,36 @@ def create_app(config=None):
             user = users.find_one({"login": login, "password_hash": password})
             users.find_one_and_update({'id': user['id']}, {'$set': {'session': token}})
             user = users.find_one({"login": login, "password_hash": password})
-            response.set_cookie('session', token)
+            response.set_cookie('session', user['session'])
             return response
         else:
             return json_util.dumps('')
 
-
+    @app.route('/api/v1/users/registration', methods=['POST'])
+    def registration():
+        # Считывание логин, пароль, повтор пороля
+        data = request.get_json(force=True)
+        new_login = data['new_login']
+        new_password = data['new_password']
+        new_repeat_password = data['new_repeat_password']
+        new_nickname = data['new_nickname']
+        # Проверка, логина на дубляж и сравнение двух паролей.
+        if users.find({"login": new_login}).count() == 0:
+            new_id = random_id()
+            while users.find_one({"id": new_id}):
+                new_id = random_id()
+            token = random_string()
+            response = make_response()
+            if new_password == new_repeat_password:
+                users.insert_one({"id": new_id, "login": new_login,
+                                  "password_hash": new_password,
+                                  "nickname": new_nickname,
+                                  "chat_list": [],
+                                  "contacts": [], "session": token})
+                response.set_cookie('session', token)
+                return response
+            return json_util.dumps('')
+        return json_util.dumps('')
 
     return app
 

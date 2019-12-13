@@ -2,7 +2,7 @@ import random
 import string
 
 
-# return ifnoramtion about user or empty document if no such token in base
+# return information about user or empty document if no such token in base
 def validate_session(users, request):
     if 'session' in request.cookies:
         session = request.cookies['session']
@@ -20,3 +20,8 @@ def push_to_db(collection, id, field, obj):
 def random_string(string_length=10):
     letters_and_digits = string.ascii_letters + string.digits
     return ''.join(random.choice(letters_and_digits) for i in range(string_length))
+
+
+# return
+def random_id():
+    return ''.join(random.choice(string.digits) for i in range(5))
