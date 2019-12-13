@@ -210,9 +210,8 @@ def create_app(config=None):
                                   "contacts": [], "session": token})
                 response.set_cookie('session', token)
                 return response
-            return json_util.dumps('2')
-        print(users.find_one({"login": new_login}))
-        return json_util.dumps('3')
+            return json_util.dumps('')
+        return json_util.dumps('')
 
     return app
 
