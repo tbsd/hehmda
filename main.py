@@ -28,6 +28,7 @@ from http import cookies
 def create_app(config=None):
     app = Flask(__name__)
     CORS(app)
+    app.config['CORS_HEADERS'] = 'Content-Type'
 
     # See http://flask.pocoo.org/docs/latest/config/
     app.config.update(dict(DEBUG=True))
