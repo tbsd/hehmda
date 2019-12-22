@@ -9,6 +9,9 @@ import json
 import pymongo
 import dns
 import time
+import hashlib, binascii
+
+
 import cgi
 
 from flask import Flask, jsonify, render_template, send_from_directory, request, make_response, redirect, url_for
@@ -185,12 +188,13 @@ def create_app(config=None):
         login = data['login']
         password = data['password']
         # Проверка, есть ли в базе данных эта личнасть
-        if users.find({"login": login, "password_hash": password}).count() == 1:
-            token = random_string(20)
+        password_hash = hashlib.md5(password.strip().encode('utf-8')).hexdigest()
+        if users.find({"login": login, "password_hash": password_hash}).count() == 1:
+            token = random_string()
             response = make_response()
-            user = users.find_one({"login": login, "password_hash": password})
+            user = users.find_one({"login": login, "password_hash": password_hash})
             users.find_one_and_update({'id': user['id']}, {'$set': {'session': token}})
-            user = users.find_one({"login": login, "password_hash": password})
+            user = users.find_one({"login": login, "password_hash": password_hash})
             response.set_cookie('session', user['session'])
             return response
         else:
@@ -212,8 +216,9 @@ def create_app(config=None):
             token = random_string()
             response = make_response()
             if new_password == new_repeat_password:
+                password_hash = hashlib.md5(new_password.strip().encode('utf-8'))
                 users.insert_one({"id": new_id, "login": new_login,
-                                  "password_hash": new_password,
+                                  "password_hash": password_hash.hexdigest(),
                                   "nickname": new_nickname,
                                   "chat_list": [],
                                   "contacts": [], "session": token})
