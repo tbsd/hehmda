@@ -43,7 +43,7 @@ def create_app(config=None):
 
     # MongoDB client
     # global
-     client = pymongo.MongoClient("mongodb+srv://testing-repo:testing-repo@testing-repo-4xvfr.mongodb.net/admin?retryWrites=true&w=majority")
+    client = pymongo.MongoClient("mongodb+srv://testing-repo:testing-repo@testing-repo-4xvfr.mongodb.net/admin?retryWrites=true&w=majority")
     # local
     # client = MongoClient('localhost', 27017)
     db = client['db']
