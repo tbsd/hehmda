@@ -230,6 +230,11 @@ def create_app(config=None):
 
     return app
 
+    # need for cookies to work propertly in case of reactjs frontend
+    @app.after_request
+    def middleware_for_response(response):
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        return response
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
