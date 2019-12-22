@@ -42,15 +42,15 @@ def create_app(config=None):
     # Flask Blueprints: http://flask.pocoo.org/docs/latest/blueprints
 
     # MongoDB client
+    # global
+     client = pymongo.MongoClient("mongodb+srv://testing-repo:testing-repo@testing-repo-4xvfr.mongodb.net/admin?retryWrites=true&w=majority")
     # local
-    client = MongoClient('localhost', 27017)
+    # client = MongoClient('localhost', 27017)
     db = client['db']
     users = db['users']
     chats = db['chats']
 
-    # global
-    # client = pymongo.MongoClient("mongodb+srv://testing-repo:testing-repo@testing-repo-4xvfr.mongodb.net/admin?retryWrites=true&w=majority")
-
+    
     # 404 error handler
     @app.errorhandler(404)
     def not_found(error):
