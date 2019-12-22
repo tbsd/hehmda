@@ -24,6 +24,7 @@ from http import cookies
 
 def create_app(config=None):
     app = Flask(__name__)
+    CROS(app)
 
     # See http://flask.pocoo.org/docs/latest/config/
     app.config.update(dict(DEBUG=True))
