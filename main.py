@@ -9,7 +9,7 @@ import json
 import pymongo
 import dns
 import time
-import hashlib, binascii
+import hashlib
 
 
 import cgi
@@ -186,7 +186,7 @@ def create_app(config=None):
             users.find_one_and_update({'id': user['id']}, {'$set': {'session': token}})
             user = users.find_one({"login": login, "password_hash": password_hash})
             response.set_cookie('session', user['session'])
-            return response
+            return json_util.dumps({'session': user['session']})
         else:
             return json_util.dumps('')
 
@@ -213,7 +213,7 @@ def create_app(config=None):
                                   "chat_list": [],
                                   "contacts": [], "session": token})
                 response.set_cookie('session', token)
-                return response
+                return json_util.dumps({'session': token})
             return json_util.dumps('')
         return json_util.dumps('')
 
