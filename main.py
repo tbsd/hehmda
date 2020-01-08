@@ -54,7 +54,7 @@ def create_app(config=None):
     # 404 error handler
     @app.errorhandler(404)
     def not_found(error):
-        return render_template('error.html')
+        return json_util.dumps({'code': 404, 'status_msg': 'Не найдено.'})
 
     # main page
     @app.route("/")
@@ -74,7 +74,7 @@ def create_app(config=None):
             info = users.find_one({'id': user['id']},
                                   {'_id': 0, 'id': 1, 'contacts': 1})
             return json_util.dumps(info)
-        return render_template('error.html')
+        return json_util.dumps({'code': 401, 'status_msg': 'Вы не вы не авторизованы.'})
 
     # get all chats
     @app.route('/api/v1/users/chats')
@@ -84,7 +84,7 @@ def create_app(config=None):
             chats_id = user['chat_list']
             info = chats.find({'id': {'$in': chats_id}}, {'_id': 0})
             return json_util.dumps(info)
-        return render_template('error.html')
+        return json_util.dumps({'code': 401, 'status_msg': 'Вы не вы не авторизованы.'})
 
     # adds contact to current user by given id
     @app.route('/api/v1/users/addcontact', methods=['POST'])
@@ -139,7 +139,7 @@ def create_app(config=None):
                        'content': content}
             push_to_db(chats, chat_id, 'messages', message)
             return json_util.dumps(message)
-        return json_util.dumps('')
+        return json_util.dumps({'code': 401, 'status_msg': 'Вы не состоите в данном чате.'})
 
     # get only new messages
     @app.route('/api/v1/chats/getnewmessages', methods=['POST'])
@@ -165,7 +165,7 @@ def create_app(config=None):
                 if last_id == messages[-1]['id']:
                     chat['messages'] = []
             return json_util.dumps(chat)
-        return json_util.dumps('')
+        return json_util.dumps({'code': 401, 'status_msg': 'Вы не состоите в данном чате.'})
 
     # get members of the chat
     @app.route('/api/v1/chats/getusers', methods=['POST'])
@@ -178,7 +178,7 @@ def create_app(config=None):
             chat = chats.find_one({'id': chat_id},
                                   {'_id': 0, 'id': 1, 'users': 1})
             return json_util.dumps(chat)
-        return json_util.dumps('')
+        return json_util.dumps({'code': 401, 'status_msg': 'Вы не состоите в данном чате.'})
 
     # Login and password for registration
 
@@ -199,7 +199,7 @@ def create_app(config=None):
             response.set_cookie('session', user['session'])
             return json_util.dumps({'session': user['session']})
         else:
-            return json_util.dumps('')
+            return json_util.dumps({'code': 401, 'status_msg': 'Неверный логин или пароль.'})
 
     @app.route('/api/v1/users/registration', methods=['POST'])
     def registration():
@@ -225,8 +225,8 @@ def create_app(config=None):
                                   "contacts": [], "session": token})
                 response.set_cookie('session', token)
                 return json_util.dumps({'session': token})
-            return json_util.dumps('')
-        return json_util.dumps('')
+            return json_util.dumps({'code': 400, 'status_msg': 'Пароли не совпадают.'})
+        return json_util.dumps({'code': 400, 'status_msg': 'Такой логин уже занят.'})
 
     return app
 
