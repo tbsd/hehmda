@@ -105,6 +105,20 @@ def create_app(config=None):
         data = request.get_json(force=True)
         chat_id = data['chat_id']
         new_user_id = data['new_user_id']
+        # if new chat created
+        if (user and chat_id == ''):
+            chat_id = random_string(30)
+            chat = chats.find_one({'id': chat_id},
+                                  {'_id': 0, 'id': 1, 'users': 1})
+            while chat:
+                chat_id = random_string(30)
+                chat = chats.find_one({'id': chat_id},
+                                      {'_id': 0, 'id': 1, 'users': 1})
+            chats.insert_one({'id': chat_id,
+                              'users': [user['id']],
+                              'messages': []})
+            push_to_db(users, user['id'], 'chat_list', chat_id)
+            user['chat_list'].append(chat_id)
         # only if user is member of this chat
         if (user and chat_id in user['chat_list']):
             new_user = users.find_one({'id': new_user_id},
