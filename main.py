@@ -284,7 +284,8 @@ def create_app(config=None):
     # need for cookies to work propertly in case of reactjs frontend
     @app.after_request
     def middleware_for_response(response):
-        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        header = response.headers
+        header['Access-Control-Allow-Origin'] = '*'
         return response
 
 
