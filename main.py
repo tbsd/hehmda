@@ -15,7 +15,7 @@ import hashlib
 import cgi
 
 from flask import Flask, jsonify, render_template, send_from_directory, request, make_response, redirect, url_for
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from pymongo import MongoClient
 from bson import json_util
 from datetime import datetime
@@ -27,7 +27,7 @@ from http import cookies
 
 def create_app(config=None):
     app = Flask(__name__)
-    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+    CORS(app, support_credentials=True)
 
     # See http://flask.pocoo.org/docs/latest/config/
     app.config.update(dict(DEBUG=True))
@@ -35,7 +35,7 @@ def create_app(config=None):
 
     # Setup cors headers to allow all domains
     # https://flask-cors.readthedocs.io/en/latest/
-    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+    CORS(app, support_credentials=True)
 
     # Definition of the routes. Put them into their own file. See also
     # Flask Blueprints: http://flask.pocoo.org/docs/latest/blueprints
@@ -57,16 +57,19 @@ def create_app(config=None):
 
     # main page
     @app.route("/")
+    @cross_origin()
     def hello_world():
         return render_template('index.html')
 
     # used for loading js to page
     @app.route('/js/<path:path>')
+    @cross_origin()
     def get_js(path):
         return send_from_directory('js', path)
 
     # get user contacts
     @app.route('/api/v1/users/contacts')
+    @cross_origin()
     def get_contacts():
         user = validate_session(users, request)
         if user:
@@ -77,6 +80,7 @@ def create_app(config=None):
 
     # get all chats
     @app.route('/api/v1/users/chats')
+    @cross_origin()
     def get_all_chats():
         user = validate_session(users, request)
         if user:
@@ -87,6 +91,7 @@ def create_app(config=None):
 
     # adds contact to current user by given id
     @app.route('/api/v1/users/addcontact', methods=['POST'])
+    @cross_origin()
     def add_contact():
         user = validate_session(users, request)
         data = request.get_json(force=True)
@@ -99,6 +104,7 @@ def create_app(config=None):
 
     # add user to chat
     @app.route('/api/v1/chats/addtochat', methods=['POST'])
+    @cross_origin()
     def add_to_chat():
         user = validate_session(users, request)
         data = request.get_json(force=True)
@@ -132,6 +138,7 @@ def create_app(config=None):
 
     # add message to chat
     @app.route('/api/v1/chats/send', methods=['POST'])
+    @cross_origin()
     def send():
         user = validate_session(users, request)
         data = request.get_json(force=True)
@@ -156,6 +163,7 @@ def create_app(config=None):
 
     # get only new messages
     @app.route('/api/v1/chats/getnewmessages', methods=['POST'])
+    @cross_origin()
     def get_new_messages():
         user = validate_session(users, request)
         data = request.get_json(force=True)
@@ -182,6 +190,7 @@ def create_app(config=None):
 
     # get members of the chat
     @app.route('/api/v1/chats/getusers', methods=['POST'])
+    @cross_origin()
     def get_users():
         user = validate_session(users, request)
         data = request.get_json(force=True)
@@ -196,6 +205,7 @@ def create_app(config=None):
     # Login and password for registration
 
     @app.route('/api/v1/users/authorization', methods=['POST'])
+    @cross_origin()
     def authorization():
         # Считывание логина и пароля
         data = request.get_json(force=True)
@@ -215,6 +225,7 @@ def create_app(config=None):
             return json_util.dumps({'code': 401, 'status_msg': 'Неверный логин или пароль.'})
 
     @app.route('/api/v1/users/registration', methods=['POST'])
+    @cross_origin()
     def registration():
         # Считывание логин, пароль, повтор пороля
         data = request.get_json(force=True)
@@ -243,6 +254,7 @@ def create_app(config=None):
 
     # get personal user inforamtion
     @app.route('/api/v1/users/personaldata')
+    @cross_origin()
     def get_personal_data():
         user = validate_session(users, request)
         if user:
@@ -255,6 +267,7 @@ def create_app(config=None):
 
     # get public user inforamtion
     @app.route('/api/v1/users/publicdata', methods=['POST'])
+    @cross_origin()
     def get_public_data():
         data = request.get_json(force=True)
         other_id = data['id']
