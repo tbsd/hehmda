@@ -242,6 +242,18 @@ def create_app(config=None):
             return json_util.dumps({'code': 400, 'status_msg': 'Пароли не совпадают.'})
         return json_util.dumps({'code': 400, 'status_msg': 'Такой логин уже занят.'})
 
+    # get personal user inforamtion
+    @app.route('/api/v1/users/personaldata')
+    def get_personal_data():
+        user = validate_session(users, request)
+        if user:
+            info = users.find_one({'id': user['id']},
+                                  {'_id': 0, 'id': 1, 'login': 1, 
+                                   'nickname': 1, 'chat_list': 1, 
+                                   'contacts': 1, 'session': 1})
+            return json_util.dumps(info)
+        return json_util.dumps({'code': 401, 'status_msg': 'Вы не вы не авторизованы.'})
+
     return app
 
     # need for cookies to work propertly in case of reactjs frontend
@@ -249,6 +261,7 @@ def create_app(config=None):
     def middleware_for_response(response):
         response.headers.add('Access-Control-Allow-Credentials', 'true')
         return response
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
