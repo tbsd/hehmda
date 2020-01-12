@@ -27,8 +27,7 @@ from http import cookies
 
 def create_app(config=None):
     app = Flask(__name__)
-    CORS(app, support_credentials=True)
-    app.config['CORS_HEADERS'] = 'Content-Type'
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     # See http://flask.pocoo.org/docs/latest/config/
     app.config.update(dict(DEBUG=True))
@@ -36,8 +35,7 @@ def create_app(config=None):
 
     # Setup cors headers to allow all domains
     # https://flask-cors.readthedocs.io/en/latest/
-    CORS(app, support_credentials=True)
-    app.config['CORS_HEADERS'] = 'Content-Type'
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     # Definition of the routes. Put them into their own file. See also
     # Flask Blueprints: http://flask.pocoo.org/docs/latest/blueprints
