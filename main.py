@@ -286,6 +286,7 @@ def create_app(config=None):
     def middleware_for_response(response):
         header = response.headers
         header['Access-Control-Allow-Origin'] = '*'
+        header['Access-Control-Allow-Credentials'] = 'true'
         return response
 
 
