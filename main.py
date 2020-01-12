@@ -36,7 +36,8 @@ def create_app(config=None):
 
     # Setup cors headers to allow all domains
     # https://flask-cors.readthedocs.io/en/latest/
-    CORS(app)
+    CORS(app, support_credentials=True)
+    app.config['CORS_HEADERS'] = 'Content-Type'
 
     # Definition of the routes. Put them into their own file. See also
     # Flask Blueprints: http://flask.pocoo.org/docs/latest/blueprints
