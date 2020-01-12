@@ -254,6 +254,19 @@ def create_app(config=None):
             return json_util.dumps(info)
         return json_util.dumps({'code': 401, 'status_msg': 'Вы не вы не авторизованы.'})
 
+    # get public user inforamtion
+    @app.route('/api/v1/users/publicdata', methods=['POST'])
+    def get_public_data():
+        data = request.get_json(force=True)
+        other_id = data['id']
+        info = users.find_one({'id': other_id},
+                              {'_id': 0, 'id': 1, 'nickname': 1})
+        if (len(info) != 0):
+            return json_util.dumps(info)
+        else: 
+            return json_util.dumps({'code': 404,
+                'status_msg': 'Пользователя с таким id не существует.'})
+
     return app
 
     # need for cookies to work propertly in case of reactjs frontend
