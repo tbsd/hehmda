@@ -68,7 +68,7 @@ def create_app(config=None):
         return send_from_directory('js', path)
 
     # get user contacts
-    @app.route('/api/v1/users/contacts')
+    @app.route('/api/v1/users/contacts', methods=['POST'])
     @cross_origin()
     def get_contacts():
         user = validate_session(users, request)
@@ -79,7 +79,7 @@ def create_app(config=None):
         return json_util.dumps({'code': 401, 'status_msg': 'Вы не вы не авторизованы.'})
 
     # get all chats
-    @app.route('/api/v1/users/chats')
+    @app.route('/api/v1/users/chats', methods=['POST'])
     @cross_origin()
     def get_all_chats():
         user = validate_session(users, request)
@@ -253,7 +253,7 @@ def create_app(config=None):
         return json_util.dumps({'code': 400, 'status_msg': 'Такой логин уже занят.'})
 
     # get personal user inforamtion
-    @app.route('/api/v1/users/personaldata')
+    @app.route('/api/v1/users/personaldata', methods=['POST'])
     @cross_origin()
     def get_personal_data():
         user = validate_session(users, request)
