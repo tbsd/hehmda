@@ -27,7 +27,7 @@ from http import cookies
 
 def create_app(config=None):
     app = Flask(__name__)
-    CORS(app, support_credentials=True)
+    CORS(app, support_credentials=True, resources={r"/*": {"origins": "*"}}, send_wildcard=True)
     app.config['CORS_HEADERS'] = 'Content-Type'
     # See http://flask.pocoo.org/docs/latest/config/
     app.config.update(dict(DEBUG=True))
@@ -284,9 +284,7 @@ def create_app(config=None):
     # need for cookies to work propertly in case of reactjs frontend
     @app.after_request
     def middleware_for_response(response):
-        header = response.headers
-        header['Access-Control-Allow-Origin'] = '*'
-        header['Access-Control-Allow-Credentials'] = 'true'
+        response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
 
