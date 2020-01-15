@@ -116,9 +116,14 @@ def create_app(config=None):
         new_contact = users.find_one({'id': data['id']},
                 {'_id': 0, 'id': 1, 'nickname': 1})
         new_contact_json = json_util.dumps(new_contact)
-        if new_contact:
-            push_to_db(users, user['id'], 'contacts', new_contact)
-        return new_contact_json
+        if (new_contact not in user['contacts']):
+            if new_contact:
+                push_to_db(users, user['id'], 'contacts', new_contact)
+                return new_contact_json
+            else:
+                return json_util.dumps({'code': 404,
+                    'status_msg': 'Такого пользователя не существует.'})
+        return json_util.dumps({'code': 409, 'status_msg': 'Этот контакт уже есть в списке пользователя.'})
 
     # add user to chat
     @app.route('/api/v1/chats/addtochat', methods=['POST'])
