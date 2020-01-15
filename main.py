@@ -89,6 +89,24 @@ def create_app(config=None):
             return json_util.dumps(info)
         return json_util.dumps({'code': 401, 'status_msg': 'Вы не вы не авторизованы.'})
 
+    # adds contact to current user by given login
+    @app.route('/api/v1/users/addcontactbylogin', methods=['POST'])
+    @cross_origin()
+    def add_contact_by_login():
+        user = validate_session(users, request)
+        data = request.get_json(force=True)
+        new_contact = users.find_one({'login': data['login']},
+                                     {'_id': 0, 'id': 1, 'nickname': 1, 'login': 1})
+        new_contact_json = json_util.dumps(new_contact)
+        if (new_contact not in user['contacts']):
+            if new_contact:
+                push_to_db(users, user['id'], 'contacts', new_contact)
+                return new_contact_json
+            else:
+                return json_util.dumps({'code': 404,
+                    'status_msg': 'Такого пользователя не существует.'})
+        return json_util.dumps({'code': 409, 'status_msg': 'Этот контакт уже есть в списке пользователя.'})
+
     # adds contact to current user by given id
     @app.route('/api/v1/users/addcontact', methods=['POST'])
     @cross_origin()
@@ -96,7 +114,7 @@ def create_app(config=None):
         user = validate_session(users, request)
         data = request.get_json(force=True)
         new_contact = users.find_one({'id': data['id']},
-                                     {'_id': 0, 'id': 1, 'nickname': 1})
+                {'_id': 0, 'id': 1, 'nickname': 1})
         new_contact_json = json_util.dumps(new_contact)
         if new_contact:
             push_to_db(users, user['id'], 'contacts', new_contact)
