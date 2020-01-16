@@ -85,9 +85,7 @@ def create_app(config=None):
         user = validate_session(users, request)
         if user:
             chats_id = user['chat_list']
-            print (chats_id)
             info = list(chats.find({'id': {'$in': chats_id}}, {'_id': 0}))
-            print(info)
             res = [dict for x in chats_id for dict in info if dict['id'] == x ]
             return json_util.dumps(res)
         return json_util.dumps({'code': 401, 'status_msg': 'Вы не вы не авторизованы.'})
