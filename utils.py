@@ -14,7 +14,14 @@ def validate_session(users, request):
 
 # adds obj to array field in document with id in collection
 def push_to_db(collection, id, field, obj):
-    collection.find_one_and_update({'id': id}, {'$push': {field: obj}})
+    collection.find_one_and_update({'id': id},
+                                    {'$push': {
+                                        field: {
+                                            '$each': [obj],
+                                            '$position': 0
+                                            }
+                                        }
+                                    })
 
 
 # return string of random letters and digits
