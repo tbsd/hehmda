@@ -181,7 +181,7 @@ def create_app(config=None):
                        'author': user['id'],
                        'time': timestamp,
                        'content': content}
-            push_to_db(chats, chat_id, 'messages', message)
+            push_to_db(chats, chat_id, 'messages', message, False)
             return json_util.dumps(message)
         return json_util.dumps({'code': 401, 'status_msg': 'Вы не состоите в данном чате.'})
 
